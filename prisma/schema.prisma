@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  role      String   @default("STAFF") // ADMIN, STAFF
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Shipment {
+  id              String          @id @default(uuid())
+  trackingNumber  String          @unique
+  supplierName    String?         // Tedarikçi Firma (Gönderen Firma) - Opsiyonel
+  senderName      String?         // Gönderici Adı
+  senderAddress   String?         // Gönderici Adresi (Kaldırılacak ama DB'de dursun)
+  senderPhone     String?         // Gönderici Telefon
+
+  receiverName    String?         // Alıcı Adı Soyadı
+  receiverCompany String?         // Alıcı Firma
+  receiverAddress String?         // Alıcı Adresi
+  receiverPhone   String?         // Alıcı Telefon
+
+  country         String?         // Ülke (Alıcı tarafında)
+  
+  dimensions      String?         // Ebat (Örn: 40x40x60)
+  weight          Float?          // Kilo (Örn: 12.5)
+  volume          Float?          // Metreküp (m3)
+  quantity        Int             @default(1) // Koli Adeti
+  
+  paymentMethod   String?         // Ödeme Bilgisi
+  
+  currentStatus   String          @default("MERKEZ_DEPO") // Varsayılan: İstanbul Merkez Depo
+  
+  // Eski alanlar (Geriye dönük uyumluluk veya manuel giriş için)
+  truckNumber     String?         
+  shippingWeek    String?         
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  events          ShipmentEvent[]
+  
+  customerId      String?
+  customer        Customer?       @relation(fields: [customerId], references: [id])
+  
+  manifestId      String?
+  manifest        Manifest?       @relation(fields: [manifestId], references: [id])
+  
+  transactions    Transaction[]
+}
+
+model Manifest {
+  id          String     @id @default(uuid())
+  name        String     // Defter Adı (Örn: 2024-W12 - Hafta 12)
+  status      String     @default("ACIK") // ACIK, KAPALI
+  currentStage String?   // Konum/Aşama (Örn: TURKIYE_GUMRUK, BULGARISTAN...)
+  truckPlate  String?    // Tır Plakası
+  notes       String?    // Notlar
+  startDate   DateTime?  // Başlangıç Tarihi
+  endDate     DateTime?  // Bitiş Tarihi
+  
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  shipments   Shipment[]
+  transactions Transaction[]
+}
+
+model Customer {
+  id           String     @id @default(uuid())
+  customerCode String     @unique // Örn: MFT-4000
+  phoneNumber  String?
+  name         String
+  address      String?    // Adres
+  city         String?    // Şehir
+  country      String?    // Ülke
+  
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  shipments    Shipment[]
+}
+
+model ShipmentEvent {
+  id          String   @id @default(uuid())
+  shipmentId  String
+  shipment    Shipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  status      String
+  description String?
+  location    String?
+  timestamp   DateTime @default(now())
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  type        String   // INCOME (Gelir), EXPENSE (Gider)
+  category    String?  // Kategori
+  amount      Float    // Tutar
+  currency    String   // TRY, EUR, USD
+  description String?  // Açıklama
+  date        DateTime @default(now()) // İşlem Tarihi
+  
+  manifestId  String?
+  manifest    Manifest? @relation(fields: [manifestId], references: [id])
+  
+  shipmentId  String?
+  shipment    Shipment? @relation(fields: [shipmentId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
