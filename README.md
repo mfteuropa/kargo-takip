@@ -1,36 +1,25 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MFT EUROPA Kargo Takip Sistemi
 
-## Getting Started
+Bu proje, MFT EUROPA müşterilerinin kargo durumlarını sorgulayabilmesi için geliştirilmiş bir Next.js web uygulamasıdır.
 
-First, run the development server:
+## Özellikler
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Müşteri Paneli:** Müşteri kodu ve telefon numarası ile kargo sorgulama.
+- **Admin Paneli:** Kargo, manifesto, müşteri ve finans yönetimi.
+- **Güvenli Giriş:** Admin paneli için şifreli giriş sistemi.
+- **Mobil Uyumlu:** Telefon ve tabletlerde sorunsuz çalışır.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Kurulum (Hosting / Sunucu)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Bu repoyu sunucunuza klonlayın.
+2. `npm install` komutu ile gerekli paketleri yükleyin.
+3. `.env` dosyanızı oluşturun (Veritabanı ve güvenlik anahtarları için).
+4. `npm run build` ile projeyi derleyin.
+5. `npm start` veya `server.js` dosyası ile uygulamayı başlatın.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Geliştirici Notları
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Framework:** Next.js 16 (App Router)
+- **Veritabanı:** SQLite (Prisma ORM)
+- **Stil:** Tailwind CSS
+- **Dil:** TypeScript
